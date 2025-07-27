@@ -15,7 +15,7 @@ I made this fork because the main branch uses an old library for the system tray
 1. Install required system dependencies (if the os can't find libwebkit2gtk-4.0-dev you have to add a repository that has it):
   - libgtk-3-dev
   - libayatana-appindicator3-dev
-  - libwebkit2gtk-4.0-dev
+  - libwebkit2gtk-4.0-dev (for some reason it's not in the mint repositories, if it's not just find a repository that contains it and add it)
 
 2. Add your user to the dialout group for Arduino access:
    ```bash
