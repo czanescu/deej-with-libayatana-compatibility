@@ -12,6 +12,6 @@ releases/
 *.bin
 logs/
 preferences.yaml
-*.gitignore
+
 *.tar.gz
 release/
