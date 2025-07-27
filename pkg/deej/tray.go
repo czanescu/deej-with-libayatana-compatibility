@@ -13,13 +13,16 @@ import (
 
 // loadTrayIcon loads the tray icon from a PNG file, falls back to embedded icon if not found
 func loadTrayIcon() []byte {
-	// Try to load icon.png from the same folder as the executable
+	// Try to load icon.png from the assets folder relative to the executable
 	exePath, err := os.Executable()
-	if err == nil {
-		iconPath := filepath.Join(filepath.Dir(exePath), "icon.png")
-		if data, err := ioutil.ReadFile(iconPath); err == nil {
-			return data
-		}
+	if err != nil {
+		return icon.DeejLogo
+	}
+
+	iconPath := filepath.Join(filepath.Dir(exePath), "assets", "logo-512.png")
+
+	if data, err := ioutil.ReadFile(iconPath); err == nil {
+		return data
 	}
 
 	// Fall back to embedded ICO (will show placeholder but app still works)
