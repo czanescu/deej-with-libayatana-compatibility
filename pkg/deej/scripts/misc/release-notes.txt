@@ -1,20 +1,57 @@
-This release ___________:
+This release provides Linux Mint 22 compatibility:
 
-- One awesome thing that happened
-- Another awesome thing
+- Modified to use libayatana-appindicator3-dev instead of libappindicator3-dev for it to work on Linux Mint 22
+- Repaired the system tray icon beacuse libayatana uses PNGs and the old icon fails to load
 
 **Launch instructions**
 
-- **First-time users:** download the [Arduino sketch](https://github.com/omriharel/deej/blob/master/arduino/deej-5-sliders-vanilla/deej-5-sliders-vanilla.ino) and upload it to your board ([see full instructions here](https://github.com/omriharel/deej#build-procedure))
-- Download both `config.yaml` and `deej.exe` (below, under _Assets_) and place them in the same directory
-- Verify that your config has the correct COM port for your Arduino board
-- Launch `deej.exe`. You can always edit the config while deej is running
+**Prerequisites**
+1. Install required system dependencies:
+   ```bash
+   sudo apt update
+   sudo apt install libgtk-3-dev libayatana-appindicator3-dev libwebkit2gtk-4.0-dev
+   ```
 
-**_Linux users:_** for the time being, please build from source. You'll need `libgtk-3-dev`, `libappindicator3-dev` and `libwebkit2gtk-4.0-dev` for system tray support. If there's demand for precompiled release binaries, please [let us know!](https://discord.gg/nf88NJu)
+2. Add your user to the dialout group for Arduino access:
+   ```bash
+   sudo usermod -a -G dialout $USER
+   ```
+   Then log out and log back in for the changes to take effect.
 
-> _Tip:_ If `deej.exe` seems to crash or doesn't start, please [send us](https://discord.gg/nf88NJu) the `logs\deej-latest-run.log` file from your `deej` directory.
+**Setup:**
+1. Connect your Arduino with the deej sketch flashed to a USB port
+2. Find your Arduino's serial port:
+   ```bash
+   ls /dev/ttyACM* /dev/ttyUSB*
+   ```
+   (Usually `/dev/ttyACM0` for Arduino Nano/Uno)
 
-> _Tip:_ `deej-debug.exe` is a version with a console window that displays additional logs. If you have trouble getting things to work, [join our Discord](https://discord.gg/nf88NJu) and post a snippet there.
+3. Edit `config.yaml` and update the `com_port` setting:
+   ```yaml
+   com_port: /dev/ttyACM0  # or your actual port
+   ```
+
+4. Update slider mappings in `config.yaml` to use your apps:
+   ```yaml
+   slider_mapping:
+     0: master
+     1: firefox          # example
+     2: spotify
+     3: discord
+     4: steam
+   ```
+
+**Running deej:**
+- Run directly: `./deej`
+- Run without system tray: `DEEJ_NO_TRAY_ICON=1 ./deej`
+- The application will appear in your system tray and start controlling volumes immediately
+
+**Troubleshooting:**
+- If you get "permission denied" on the serial port, make sure you're in the dialout group
+- Check Arduino connection with: `cat /dev/ttyACM0` (should show slider values)
+- Config file auto-reloads when changed, no need to restart deej
+
+
 
 More detailed instructions and documentation are in the [repo's main page](https://github.com/omriharel/deej).
 

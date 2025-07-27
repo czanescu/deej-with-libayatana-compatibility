@@ -1,11 +1,30 @@
 package deej
 
 import (
-	"github.com/getlantern/systray"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+
+	"fyne.io/systray"
 
 	"github.com/omriharel/deej/pkg/deej/icon"
 	"github.com/omriharel/deej/pkg/deej/util"
 )
+
+// loadTrayIcon loads the tray icon from a PNG file, falls back to embedded icon if not found
+func loadTrayIcon() []byte {
+	// Try to load icon.png from the same folder as the executable
+	exePath, err := os.Executable()
+	if err == nil {
+		iconPath := filepath.Join(filepath.Dir(exePath), "icon.png")
+		if data, err := ioutil.ReadFile(iconPath); err == nil {
+			return data
+		}
+	}
+
+	// Fall back to embedded ICO (will show placeholder but app still works)
+	return icon.DeejLogo
+}
 
 func (d *Deej) initializeTray(onDone func()) {
 	logger := d.logger.Named("tray")
@@ -13,15 +32,17 @@ func (d *Deej) initializeTray(onDone func()) {
 	onReady := func() {
 		logger.Debug("Tray instance ready")
 
-		systray.SetTemplateIcon(icon.DeejLogo, icon.DeejLogo)
+		// Load PNG icon from file or fall back to embedded icon
+		iconData := loadTrayIcon()
+		systray.SetIcon(iconData)
 		systray.SetTitle("deej")
 		systray.SetTooltip("deej")
 
 		editConfig := systray.AddMenuItem("Edit configuration", "Open config file with notepad")
-		editConfig.SetIcon(icon.EditConfig)
+		// Skip setting icon for menu items for now to avoid format issues
 
 		refreshSessions := systray.AddMenuItem("Re-scan audio sessions", "Manually refresh audio sessions if something's stuck")
-		refreshSessions.SetIcon(icon.RefreshSessions)
+		// Skip setting icon for menu items for now to avoid format issues
 
 		if d.version != "" {
 			systray.AddSeparator()
