@@ -55,6 +55,7 @@ I made this fork because the main branch uses an old library for the system tray
 - If you get "permission denied" on the serial port, make sure you're in the dialout group
 - Check Arduino connection with: `cat /dev/ttyACM0` (should show slider values)
 - Config file auto-reloads when changed, no need to restart deej
+- ./deej needs to be run from the directory it is in, so if you want to run it from a shell script you first have to cd into that directory
 
 
 
